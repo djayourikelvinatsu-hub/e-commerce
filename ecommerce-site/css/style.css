@@ -875,7 +875,7 @@ h6 {
 }
 
 .auth-tab.active {
-    color: var(--primary-color);
+    color: #e77600;
 }
 
 .auth-tab.active::after {
@@ -885,7 +885,7 @@ h6 {
     left: 0;
     right: 0;
     height: 2px;
-    background: var(--primary-color);
+    background: #e77600;
 }
 
 .auth-form h2 {

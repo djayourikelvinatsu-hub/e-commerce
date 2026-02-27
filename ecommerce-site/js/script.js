@@ -644,3 +644,205 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+// --- Authentication Logic ---
+window.auth = {
+    user: JSON.parse(localStorage.getItem('user')) || null,
+    token: localStorage.getItem('token') || null,
+
+    init() {
+        this.injectAuthModal();
+        this.updateHeaderUI();
+        this.attachEventListeners();
+    },
+
+    injectAuthModal() {
+        if (document.getElementById('authModal')) return;
+
+        const modalHTML = `
+            <div id="authModal" class="modal">
+                <div class="modal-content auth-modal" style="max-width: 400px;">
+                    <span class="close" onclick="auth.closeModal()">&times;</span>
+                    
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" onclick="auth.switchTab('login')">Sign In</button>
+                        <button class="auth-tab" onclick="auth.switchTab('register')">Create Account</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="loginForm" class="auth-form" onsubmit="auth.handleLogin(event)">
+                        <h2>Sign In</h2>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Continue</button>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="registerForm" class="auth-form" style="display: none;" onsubmit="auth.handleRegister(event)">
+                        <h2>Create account</h2>
+                        <div class="form-group">
+                            <label>Your Name</label>
+                            <input type="text" id="registerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="registerPassword" required minlength="6">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create your ShopEase account</button>
+                    </form>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    },
+
+    switchTab(tab) {
+        const tabs = document.querySelectorAll('.auth-tab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        tabs.forEach(t => t.classList.remove('active'));
+
+        if (tab === 'login') {
+            tabs[0].classList.add('active');
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+        } else {
+            tabs[1].classList.add('active');
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+        }
+    },
+
+    openModal() {
+        document.getElementById('authModal').style.display = 'block';
+    },
+
+    closeModal() {
+        document.getElementById('authModal').style.display = 'none';
+    },
+
+    async handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+            const res = await fetch('http://localhost:5001/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                this.setSession(data.token, data.user);
+                this.closeModal();
+                cart.showNotification('Successfully signed in!');
+                document.getElementById('loginForm').reset();
+            } else {
+                cart.showNotification(data.message || 'Login failed', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            cart.showNotification('Network error occurred. Is backend running?', 'error');
+        }
+    },
+
+    async handleRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('registerName').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+
+        try {
+            const res = await fetch('http://localhost:5001/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                this.setSession(data.token, data.user);
+                this.closeModal();
+                cart.showNotification('Account created successfully!');
+                document.getElementById('registerForm').reset();
+            } else {
+                cart.showNotification(data.message || 'Registration failed', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            cart.showNotification('Network error occurred. Is backend running?', 'error');
+        }
+    },
+
+    setSession(token, user) {
+        this.token = token;
+        this.user = user;
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        this.updateHeaderUI();
+    },
+
+    logout(e) {
+        if (e) e.preventDefault();
+        this.token = null;
+        this.user = null;
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        this.updateHeaderUI();
+        cart.showNotification('Signed out successfully');
+    },
+
+    updateHeaderUI() {
+        const accountBtn = document.getElementById('accountBtn');
+        if (!accountBtn) return;
+
+        if (this.user) {
+            accountBtn.innerHTML = `
+                <span class="nav-small-text">Hello, ${this.user.name.split(' ')[0]}</span>
+                <span class="nav-bold-text">Account & Lists</span>
+            `;
+            // Change click to logout for now (or open a dropdown in future)
+            accountBtn.onclick = (e) => {
+                e.preventDefault();
+                if (confirm('Are you sure you want to sign out?')) {
+                    this.logout();
+                }
+            };
+        } else {
+            accountBtn.innerHTML = `
+                <span class="nav-small-text">Hello, sign in</span>
+                <span class="nav-bold-text">Account & Lists</span>
+            `;
+            accountBtn.onclick = (e) => {
+                e.preventDefault();
+                this.openModal();
+            };
+        }
+    },
+
+    attachEventListeners() {
+        // Modal external click close
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('authModal');
+            if (e.target === modal) {
+                this.closeModal();
+            }
+        });
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    auth.init();
+});
