@@ -168,8 +168,47 @@
 </head>
 
 <body>
-    <header class="header">
-        <!-- Same header -->
+        <header class="header amazon-header">
+        <div class="nav-top nav-container">
+            <div class="logo">
+                <a href="index.html">ShopEase</a>
+            </div>
+            
+            <div class="search-bar amazon-search">
+                <select class="search-select">
+                    <option>All</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="Search ShopEase">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="nav-icons amazon-nav-icons">
+                <a href="#" id="accountBtn" class="nav-text-container">
+                    <span class="nav-small-text">Hello, sign in</span>
+                    <span class="nav-bold-text">Account & Lists</span>
+                </a>
+                <a href="orders.html" id="ordersBtn" class="nav-text-container">
+                    <span class="nav-small-text">Returns</span>
+                    <span class="nav-bold-text">& Orders</span>
+                </a>
+                <a href="cart.html" class="cart-icon amazon-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="nav-bold-text">Cart</span>
+                    <span id="cartCount" class="cart-count">0</span>
+                </a>
+                <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+        <div class="nav-bottom">
+            <ul>
+                <li><a href="#"><i class="fas fa-bars"></i> All</a></li>
+                <li><a href="#">Today's Deals</a></li>
+                <li><a href="#">Customer Service</a></li>
+                <li><a href="#">Registry</a></li>
+                <li><a href="#">Gift Cards</a></li>
+                <li><a href="#">Sell</a></li>
+            </ul>
+        </div>
     </header>
 
     <div class="blog-page">

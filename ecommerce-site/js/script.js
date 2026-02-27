@@ -640,7 +640,7 @@ style.textContent = `
     }
     
     .product-title:hover {
-        color: var(--primary-color);
+        color: #c45500;
     }
 `;
 document.head.appendChild(style);

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - ShopEase</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .wishlist-page {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 5%;
+        }
+
+        .wishlist-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .wishlist-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .wishlist-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .wishlist-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .wishlist-item-info {
+            padding: 1rem;
+        }
+
+        .wishlist-item-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .wishlist-item-price {
+            color: #B12704;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .wishlist-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .remove-wishlist {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #e74c3c;
+            transition: all 0.3s ease;
+        }
+
+        .remove-wishlist:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .empty-wishlist {
+            text-align: center;
+            padding: 4rem;
+        }
+
+        .empty-wishlist i {
+            font-size: 5rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header amazon-header">
+        <div class="nav-top nav-container">
+            <div class="logo">
+                <a href="index.html">ShopEase</a>
+            </div>
+
+            <div class="search-bar amazon-search">
+                <select class="search-select">
+                    <option>All</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="Search ShopEase">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="nav-icons amazon-nav-icons">
+                <a href="#" id="accountBtn" class="nav-text-container">
+                    <span class="nav-small-text">Hello, sign in</span>
+                    <span class="nav-bold-text">Account & Lists</span>
+                </a>
+                <a href="orders.html" id="ordersBtn" class="nav-text-container">
+                    <span class="nav-small-text">Returns</span>
+                    <span class="nav-bold-text">& Orders</span>
+                </a>
+                <a href="cart.html" class="cart-icon amazon-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="nav-bold-text">Cart</span>
+                    <span id="cartCount" class="cart-count">0</span>
+                </a>
+                <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+        <div class="nav-bottom">
+            <ul>
+                <li><a href="#"><i class="fas fa-bars"></i> All</a></li>
+                <li><a href="#">Today's Deals</a></li>
+                <li><a href="#">Customer Service</a></li>
+                <li><a href="#">Registry</a></li>
+                <li><a href="#">Gift Cards</a></li>
+                <li><a href="#">Sell</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="wishlist-page">
+        <h1 class="wishlist-title">My Wishlist</h1>
+        <div class="wishlist-grid" id="wishlistGrid">
+            <!-- Wishlist items will be loaded here -->
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        function loadWishlist() {
+            const grid = document.getElementById('wishlistGrid');
+            const wishlistItems = products.filter(p => wishlist.includes(p.id));
+
+            if (wishlistItems.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-wishlist" style="grid-column: 1/-1;">
+                        <i class="far fa-heart"></i>
+                        <h3>Your wishlist is empty</h3>
+                        <p>Save items you love to your wishlist</p>
+                        <a href="products.html" class="btn btn-primary" style="margin-top: 1rem;">Shop Now</a>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = wishlistItems.map(product => `
+                <div class="wishlist-item">
+                    <button class="remove-wishlist" onclick="removeFromWishlist(${product.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <img src="${product.images[0]}" alt="${product.name}" 
+                         onclick="window.location.href='product-detail.html?id=${product.id}'">
+                    <div class="wishlist-item-info">
+                        <h3 class="wishlist-item-title" onclick="window.location.href='product-detail.html?id=${product.id}'">
+                            ${product.name}
+                        </h3>
+                        <div class="wishlist-item-price">$${product.price.toFixed(2)}</div>
+                        <button class="btn btn-primary btn-add-to-cart" 
+                                onclick="cart.addItem(${product.id})">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function removeFromWishlist(productId) {
+            wishlist = wishlist.filter(id => id !== productId);
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+            loadWishlist();
+            cart.showNotification('Removed from wishlist');
+        }
+
+        document.addEventListener('DOMContentLoaded', loadWishlist);
+    </script>
+</body>
+
+</html>

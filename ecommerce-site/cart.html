@@ -68,7 +68,7 @@
 
         .cart-item-price {
             font-weight: 600;
-            color: #2ecc71;
+            color: #B12704;
         }
 
         .quantity-control {
@@ -169,27 +169,47 @@
 </head>
 
 <body>
-    <header class="header">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="logo">
-                    <a href="index.html">ShopEase</a>
-                </div>
-                <div class="search-bar">
-                    <input type="text" id="searchInput" placeholder="Search products...">
-                    <button id="searchBtn"><i class="fas fa-search"></i></button>
-                </div>
-                <div class="nav-icons">
-                    <a href="#" id="accountBtn"><i class="fas fa-user"></i></a>
-                    <a href="#" id="wishlistBtn"><i class="fas fa-heart"></i></a>
-                    <a href="cart.html" class="cart-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count">0</span>
-                    </a>
-                    <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
-                </div>
+    <header class="header amazon-header">
+        <div class="nav-top nav-container">
+            <div class="logo">
+                <a href="index.html">ShopEase</a>
             </div>
-        </nav>
+
+            <div class="search-bar amazon-search">
+                <select class="search-select">
+                    <option>All</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="Search ShopEase">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="nav-icons amazon-nav-icons">
+                <a href="#" id="accountBtn" class="nav-text-container">
+                    <span class="nav-small-text">Hello, sign in</span>
+                    <span class="nav-bold-text">Account & Lists</span>
+                </a>
+                <a href="orders.html" id="ordersBtn" class="nav-text-container">
+                    <span class="nav-small-text">Returns</span>
+                    <span class="nav-bold-text">& Orders</span>
+                </a>
+                <a href="cart.html" class="cart-icon amazon-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="nav-bold-text">Cart</span>
+                    <span id="cartCount" class="cart-count">0</span>
+                </a>
+                <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+        <div class="nav-bottom">
+            <ul>
+                <li><a href="#"><i class="fas fa-bars"></i> All</a></li>
+                <li><a href="#">Today's Deals</a></li>
+                <li><a href="#">Customer Service</a></li>
+                <li><a href="#">Registry</a></li>
+                <li><a href="#">Gift Cards</a></li>
+                <li><a href="#">Sell</a></li>
+            </ul>
+        </div>
     </header>
 
     <div class="cart-page">
@@ -229,7 +249,7 @@
                 <button class="btn btn-primary checkout-btn" onclick="proceedToCheckout()">
                     Proceed to Checkout
                 </button>
-                <a href="products.html" style="display: block; text-align: center; margin-top: 1rem; color: #2ecc71;">
+                <a href="products.html" style="display: block; text-align: center; margin-top: 1rem; color: #007185;">
                     Continue Shopping
                 </a>
             </div>
