@@ -852,46 +852,211 @@ h6 {
     }
 }
 
-/* Auth Styles */
-.auth-modal .modal-content {
-    padding: 2rem;
+/* Amazon-Style Auth Modal */
+.amazon-auth-modal {
+    background-color: white !important;
+    /* Take over the screen */
 }
 
-.auth-tabs {
+.amazon-close {
+    color: #333;
+    z-index: 10;
+}
+
+.amazon-auth-container {
+    width: 100%;
+    min-height: 100vh;
     display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid var(--border-color);
+    flex-direction: column;
+    align-items: center;
+    padding-top: 14px;
+    font-family: Arial, sans-serif;
+    background-color: white;
 }
 
-.auth-tab {
-    padding: 0.5rem 1rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.1rem;
-    color: var(--text-light);
-    position: relative;
+.amazon-logo-container {
+    margin-bottom: 18px;
+    padding: 10px 0;
 }
 
-.auth-tab.active {
-    color: #e77600;
+.amazon-logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: #111;
+    margin: 0;
 }
 
-.auth-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #e77600;
+.amazon-card {
+    width: 350px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px 26px;
+    background-color: #fff;
+    box-sizing: border-box;
+    margin-bottom: 22px;
 }
 
-.auth-form h2 {
+.amazon-card h2 {
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+}
+
+.amazon-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.amazon-form-group label {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 4px;
+    padding-left: 2px;
+}
+
+.amazon-input {
+    width: 100%;
+    padding: 3px 7px;
+    height: 31px;
+    border: 1px solid #a6a6a6;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .5), 0 1px 0 rgba(0, 0, 0, .07) inset;
+    font-size: 13px;
+    box-sizing: border-box;
+    transition: all 0.1s;
+}
+
+.amazon-input:focus {
+    border-color: #e77600;
+    box-shadow: 0 0 3px 2px rgba(228, 121, 17, .5);
+    outline: none;
+}
+
+.amazon-input::placeholder {
+    color: #999;
+}
+
+.amazon-btn {
+    padding: 0;
+    font-size: 13px;
     text-align: center;
-    margin-bottom: 1.5rem;
-    color: var(--dark-color);
+    text-decoration: none;
+    cursor: pointer;
+    vertical-align: middle;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px 0 rgba(213, 217, 217, .5);
+    height: 31px;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+.amazon-btn-primary {
+    background: #ffd814;
+    border: 1px solid #fcd200;
+    color: #111;
+}
+
+.amazon-btn-primary:hover {
+    background: #f7ca00;
+}
+
+.amazon-btn-secondary {
+    background: #fff;
+    border: 1px solid #d5d9d9;
+    color: #0f1111;
+    box-shadow: 0 2px 5px 0 rgba(213, 217, 217, .5);
+}
+
+.amazon-btn-secondary:hover {
+    background: #f7fafa;
+}
+
+.amazon-link {
+    color: #0066c0;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.amazon-link:hover {
+    text-decoration: underline;
+    color: #c45500;
+}
+
+.amazon-legal {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 18px;
+}
+
+.amazon-divider {
+    position: relative;
+    text-align: center;
+    margin-top: 22px;
+    margin-bottom: 14px;
+}
+
+.amazon-divider::before {
+    content: "";
+    width: 100%;
+    background-color: transparent;
+    display: block;
+    height: 1px;
+    border-top: 1px solid #e7e7e7;
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+}
+
+.amazon-divider h5 {
+    color: #767676;
+    font-weight: 400;
+    font-size: 12px;
+    background-color: #fff;
+    padding: 0 8px;
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+    margin: 0;
+}
+
+.amazon-password-hint {
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+.amazon-footer {
+    border-top: 1px solid #ddd;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    padding-bottom: 90px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, .14), rgba(0, 0, 0, .03) 3px, transparent);
+    flex-grow: 1;
+}
+
+.amazon-footer-links {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.amazon-footer-links a {
+    color: #0066c0;
+    text-decoration: none;
+    font-size: 11px;
+}
+
+.amazon-footer-links a:hover {
+    text-decoration: underline;
+}
+
+.amazon-footer p {
+    font-size: 11px;
+    color: #555;
+    margin: 0;
 }
 
 /* User Menu */

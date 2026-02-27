@@ -659,46 +659,78 @@ window.auth = {
         if (document.getElementById('authModal')) return;
 
         const modalHTML = `
-            <div id="authModal" class="modal">
-                <div class="modal-content auth-modal" style="max-width: 400px;">
-                    <span class="close" onclick="auth.closeModal()">&times;</span>
-                    
-                    <div class="auth-tabs">
-                        <button class="auth-tab active" onclick="auth.switchTab('login')">Sign In</button>
-                        <button class="auth-tab" onclick="auth.switchTab('register')">Create Account</button>
+            <div id="authModal" class="modal amazon-auth-modal">
+                <span class="close amazon-close" onclick="auth.closeModal()">&times;</span>
+                <div class="amazon-auth-container">
+                    <!-- Logo Header -->
+                    <div class="amazon-logo-container" onclick="auth.closeModal()" style="cursor: pointer;" title="Back to ShopEase">
+                        <h1 class="amazon-logo">ShopEase</h1>
                     </div>
 
-                    <!-- Login Form -->
-                    <form id="loginForm" class="auth-form" onsubmit="auth.handleLogin(event)">
-                        <h2>Sign In</h2>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="loginEmail" required>
+                    <!-- Main Login Card -->
+                    <div class="amazon-card" id="loginCard">
+                        <h2>Sign in</h2>
+                        <form id="loginForm" onsubmit="auth.handleLogin(event)">
+                            <div class="amazon-form-group">
+                                <label for="loginEmail">Email</label>
+                                <input type="email" id="loginEmail" class="amazon-input" required>
+                            </div>
+                            <div class="amazon-form-group" style="margin-top: 15px;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <label for="loginPassword">Password</label>
+                                    <a href="#" class="amazon-link" style="font-size: 13px;">Forgot your password?</a>
+                                </div>
+                                <input type="password" id="loginPassword" class="amazon-input" required>
+                            </div>
+                            <button type="submit" class="amazon-btn amazon-btn-primary" style="margin-top: 15px; width: 100%;">Continue</button>
+                        </form>
+                        <div class="amazon-legal">
+                            By continuing, you agree to ShopEase's <a href="#" class="amazon-link">Conditions of Use</a> and <a href="#" class="amazon-link">Privacy Notice</a>.
                         </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="loginPassword" required>
+                        
+                        <div class="amazon-divider">
+                            <h5>New to ShopEase?</h5>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Continue</button>
-                    </form>
+                        <button type="button" class="amazon-btn amazon-btn-secondary" style="width: 100%;" onclick="auth.switchTab('register')">Create your ShopEase account</button>
+                    </div>
 
-                    <!-- Register Form -->
-                    <form id="registerForm" class="auth-form" style="display: none;" onsubmit="auth.handleRegister(event)">
+                    <!-- Main Register Card -->
+                    <div class="amazon-card" id="registerCard" style="display: none;">
                         <h2>Create account</h2>
-                        <div class="form-group">
-                            <label>Your Name</label>
-                            <input type="text" id="registerName" required>
+                        <form id="registerForm" onsubmit="auth.handleRegister(event)">
+                            <div class="amazon-form-group">
+                                <label for="registerName">Your name</label>
+                                <input type="text" id="registerName" class="amazon-input" required placeholder="First and last name">
+                            </div>
+                            <div class="amazon-form-group" style="margin-top: 15px;">
+                                <label for="registerEmail">Email</label>
+                                <input type="email" id="registerEmail" class="amazon-input" required>
+                            </div>
+                            <div class="amazon-form-group" style="margin-top: 15px;">
+                                <label for="registerPassword">Password</label>
+                                <input type="password" id="registerPassword" class="amazon-input" required minlength="6" placeholder="At least 6 characters">
+                                <div class="amazon-password-hint"><i class="fas fa-info-circle"></i> Passwords must be at least 6 characters.</div>
+                            </div>
+                            <button type="submit" class="amazon-btn amazon-btn-primary" style="margin-top: 15px; width: 100%;">Continue</button>
+                        </form>
+                         <div class="amazon-legal">
+                            By creating an account, you agree to ShopEase's <a href="#" class="amazon-link">Conditions of Use</a> and <a href="#" class="amazon-link">Privacy Notice</a>.
                         </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="registerEmail" required>
+                        
+                        <div class="amazon-divider" style="margin-top: 20px; border-top-color: transparent; box-shadow: 0 1px 0 rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.5);"></div>
+                        <div class="amazon-legal" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                            Already have an account? <a href="#" class="amazon-link" onclick="auth.switchTab('login')">Sign in <i class="fas fa-caret-right"></i></a>
                         </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="registerPassword" required minlength="6">
+                    </div>
+                    
+                    <div class="amazon-footer">
+                        <div class="amazon-footer-links">
+                            <a href="#">Conditions of Use</a>
+                            <a href="#">Privacy Notice</a>
+                            <a href="#">Help</a>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create your ShopEase account</button>
-                    </form>
+                        <p>© 2024, ShopEase.com, Inc. or its affiliates</p>
+                    </div>
                 </div>
             </div>
         `;
@@ -706,20 +738,15 @@ window.auth = {
     },
 
     switchTab(tab) {
-        const tabs = document.querySelectorAll('.auth-tab');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-
-        tabs.forEach(t => t.classList.remove('active'));
+        const loginCard = document.getElementById('loginCard');
+        const registerCard = document.getElementById('registerCard');
 
         if (tab === 'login') {
-            tabs[0].classList.add('active');
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
+            loginCard.style.display = 'block';
+            registerCard.style.display = 'none';
         } else {
-            tabs[1].classList.add('active');
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
+            loginCard.style.display = 'none';
+            registerCard.style.display = 'block';
         }
     },
 

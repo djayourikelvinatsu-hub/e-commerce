@@ -184,12 +184,12 @@
         </div>
         <div class="nav-bottom">
             <ul>
-                <li><a href="#"><i class="fas fa-bars"></i> All</a></li>
-                <li><a href="#">Today's Deals</a></li>
-                <li><a href="#">Customer Service</a></li>
-                <li><a href="#">Registry</a></li>
-                <li><a href="#">Gift Cards</a></li>
-                <li><a href="#">Sell</a></li>
+                <li><a href="products.html"><i class="fas fa-bars"></i> All</a></li>
+                <li><a href="products.html?sale=true">Today's Deals</a></li>
+                <li><a href="customer-service.html">Customer Service</a></li>
+                <li><a href="registry.html">Registry</a></li>
+                <li><a href="gift-cards.html">Gift Cards</a></li>
+                <li><a href="sell.html">Sell</a></li>
             </ul>
         </div>
     </header>
@@ -421,7 +421,37 @@
         // Initialize page
         document.addEventListener('DOMContentLoaded', () => {
             filteredProducts = [...products];
-            loadProducts();
+
+            // Parse URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('category');
+            const searchParam = urlParams.get('search');
+            const saleParam = urlParams.get('sale');
+
+            if (categoryParam) {
+                // Check the corresponding category checkbox
+                const catCheckbox = document.querySelector(`.filter-checkbox input[value="${categoryParam}"]`);
+                if (catCheckbox) catCheckbox.checked = true;
+            }
+
+            if (searchParam) {
+                const searchTerm = searchParam.toLowerCase();
+                filteredProducts = filteredProducts.filter(p =>
+                    p.name.toLowerCase().includes(searchTerm) ||
+                    p.description.toLowerCase().includes(searchTerm) ||
+                    p.brand.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (saleParam === 'true') {
+                filteredProducts = filteredProducts.filter(p => p.isSale);
+            }
+
+            if (categoryParam) {
+                applyFilters(); // This will re-filter based on the checked box
+            } else {
+                loadProducts();
+            }
         });
     </script>
 </body>
