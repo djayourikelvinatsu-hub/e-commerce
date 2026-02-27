@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - ShopEase</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .checkout-page {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 5%;
+        }
+
+        .checkout-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .checkout-form {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .form-section h3 {
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2ecc71;
+        }
+
+        .order-summary {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .order-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .order-item-details {
+            flex: 1;
+        }
+
+        .order-item-name {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .order-item-price {
+            color: #2ecc71;
+            font-weight: 600;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .success-modal {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .success-modal i {
+            font-size: 5rem;
+            color: #2ecc71;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="index.html">ShopEase</a>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search products...">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="nav-icons">
+                    <a href="#" id="accountBtn"><i class="fas fa-user"></i></a>
+                    <a href="#" id="wishlistBtn"><i class="fas fa-heart"></i></a>
+                    <a href="cart.html" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                    <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="checkout-page">
+        <h1 class="checkout-title">Checkout</h1>
+
+        <div class="checkout-container">
+            <form class="checkout-form" id="checkoutForm" onsubmit="placeOrder(event)">
+                <div class="form-section">
+                    <h3>Contact Information</h3>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Shipping Address</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" id="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="lastName" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" id="address" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label>State</label>
+                            <input type="text" id="state" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ZIP Code</label>
+                            <input type="text" id="zipCode" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Payment Method</h3>
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Expiry Date</label>
+                            <input type="text" id="expiry" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label>CVV</label>
+                            <input type="text" id="cvv" placeholder="123" required>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary place-order-btn">Place Order</button>
+            </form>
+
+            <div class="order-summary">
+                <h3>Your Order</h3>
+                <div id="orderItemsList">
+                    <!-- Order items will be loaded here -->
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Subtotal</span>
+                        <span id="orderSubtotal">$0.00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Shipping</span>
+                        <span id="orderShipping">$10.00</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 600; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd;">
+                        <span>Total</span>
+                        <span id="orderTotal">$0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content success-modal">
+            <i class="fas fa-check-circle"></i>
+            <h2>Order Placed Successfully!</h2>
+            <p>Thank you for your purchase. We've sent a confirmation email.</p>
+            <button class="btn btn-primary" onclick="continueShopping()">Continue Shopping</button>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        function loadOrderSummary() {
+            const container = document.getElementById('orderItemsList');
+            const subtotal = cart.getSubtotal();
+            const shipping = subtotal > 100 ? 0 : 10;
+            const total = subtotal + shipping + (subtotal * 0.1);
+
+            container.innerHTML = cart.items.map(item => `
+                <div class="order-item">
+                    <img src="${item.image}" alt="${item.name}" class="order-item-image">
+                    <div class="order-item-details">
+                        <div class="order-item-name">${item.name}</div>
+                        <div class="order-item-meta">Qty: ${item.quantity}</div>
+                    </div>
+                    <div class="order-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('orderSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('orderShipping').textContent = shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`;
+            document.getElementById('orderTotal').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function placeOrder(e) {
+            e.preventDefault();
+
+            // Simple validation
+            const required = ['email', 'phone', 'firstName', 'lastName', 'address', 'city', 'state', 'zipCode', 'cardNumber', 'expiry', 'cvv'];
+            for (let field of required) {
+                if (!document.getElementById(field).value) {
+                    cart.showNotification('Please fill all fields', 'error');
+                    return;
+                }
+            }
+
+            // Clear cart
+            cart.items = [];
+            cart.saveCart();
+
+            // Show success modal
+            document.getElementById('successModal').style.display = 'block';
+        }
+
+        function continueShopping() {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (cart.items.length === 0) {
+                window.location.href = 'cart.html';
+            }
+            loadOrderSummary();
+        });
+    </script>
+</body>
+
+</html>

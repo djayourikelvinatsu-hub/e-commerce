@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - ShopEase</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .orders-page {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 5%;
+        }
+
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .orders-title {
+            font-size: 2rem;
+            color: var(--dark-color);
+        }
+
+        .order-filters {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .order-filters select {
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background: white;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .order-header {
+            background: var(--light-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .order-number {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .order-date {
+            color: var(--text-light);
+        }
+
+        .order-status {
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-shipped {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .order-body {
+            padding: 1.5rem;
+        }
+
+        .order-items {
+            margin-bottom: 1rem;
+        }
+
+        .order-item {
+            display: flex;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+        }
+
+        .order-item-details {
+            flex: 1;
+        }
+
+        .order-item-name {
+            font-weight: 500;
+        }
+
+        .order-item-meta {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .order-item-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .order-footer {
+            padding: 1rem 1.5rem;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .order-total {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-outline-small {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--primary-color);
+            background: transparent;
+            color: var(--primary-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-outline-small:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 4rem;
+            background: white;
+            border-radius: var(--border-radius);
+        }
+
+        .no-orders i {
+            font-size: 4rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .no-orders h2 {
+            margin-bottom: 1rem;
+        }
+
+        .no-orders p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+
+            .order-header,
+            .order-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .order-actions {
+                width: 100%;
+            }
+
+            .btn-outline-small {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <!-- Same header -->
+    </header>
+
+    <div class="orders-page">
+        <div class="orders-header">
+            <h1 class="orders-title">My Orders</h1>
+            <div class="order-filters">
+                <select id="orderStatusFilter" onchange="filterOrders()">
+                    <option value="all">All Orders</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="processing">Processing</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="ordersContainer">
+            <!-- Orders will be loaded here -->
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const container = document.getElementById('ordersContainer');
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="no-orders">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h2>No orders yet</h2>
+                        <p>Looks like you haven't placed any orders yet</p>
+                        <a href="products.html" class="btn btn-primary">Start Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(order => {
+                const statusClass = {
+                    'delivered': 'status-delivered',
+                    'shipped': 'status-shipped',
+                    'processing': 'status-processing',
+                    'cancelled': 'status-cancelled'
+                }[order.status || 'processing'];
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <span class="order-number">${order.orderNumber}</span>
+                                <span class="order-date">${new Date(order.date).toLocaleDateString()}</span>
+                            </div>
+                            <span class="order-status ${statusClass}">${order.status || 'Processing'}</span>
+                        </div>
+                        
+                        <div class="order-body">
+                            <div class="order-items">
+                                ${order.items.map(item => `
+                                    <div class="order-item">
+                                        <img src="${item.image}" alt="${item.name}" class="order-item-image">
+                                        <div class="order-item-details">
+                                            <div class="order-item-name">${item.name}</div>
+                                            <div class="order-item-meta">Qty: ${item.quantity}</div>
+                                        </div>
+                                        <div class="order-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="order-footer">
+                            <div class="order-total">
+                                Total: ${order.total}
+                            </div>
+                            <div class="order-actions">
+                                <button class="btn-outline-small" onclick="trackOrder('${order.orderNumber}')">
+                                    <i class="fas fa-truck"></i> Track Order
+                                </button>
+                                <button class="btn-outline-small" onclick="viewInvoice('${order.orderNumber}')">
+                                    <i class="fas fa-file-invoice"></i> Invoice
+                                </button>
+                                <button class="btn-outline-small" onclick="reorder('${order.orderNumber}')">
+                                    <i class="fas fa-redo"></i> Reorder
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterOrders() {
+            const filter = document.getElementById('orderStatusFilter').value;
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
+            displayFilteredOrders(filtered);
+        }
+
+        function displayFilteredOrders(orders) {
+            // Similar to loadOrders but with filtered array
+        }
+
+        function trackOrder(orderNumber) {
+            cart.showNotification(`Tracking order: ${orderNumber}`);
+        }
+
+        function viewInvoice(orderNumber) {
+            window.open(`invoice.html?order=${orderNumber}`, '_blank');
+        }
+
+        function reorder(orderNumber) {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const order = orders.find(o => o.orderNumber === orderNumber);
+
+            if (order) {
+                order.items.forEach(item => {
+                    for (let i = 0; i < item.quantity; i++) {
+                        cart.addItem(item.id);
+                    }
+                });
+                cart.showNotification('Items added to cart!');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadOrders);
+    </script>
+</body>
+
+</html>

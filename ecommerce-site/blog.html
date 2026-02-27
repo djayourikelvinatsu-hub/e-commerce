@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - ShopEase</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .blog-page {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 5%;
+        }
+
+        .blog-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .blog-title {
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+
+        .blog-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .blog-meta i {
+            margin-right: 0.3rem;
+            color: var(--primary-color);
+        }
+
+        .blog-post-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .blog-excerpt {
+            color: var(--text-color);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .read-more {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .read-more:hover {
+            gap: 1rem;
+        }
+
+        .blog-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .category-tag {
+            padding: 0.5rem 1.5rem;
+            background: var(--light-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .category-tag:hover,
+        .category-tag.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .featured-post {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+        }
+
+        .featured-image {
+            height: 100%;
+            min-height: 400px;
+            object-fit: cover;
+        }
+
+        .featured-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-label {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            width: fit-content;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .featured-post {
+                grid-template-columns: 1fr;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <!-- Same header -->
+    </header>
+
+    <div class="blog-page">
+        <div class="blog-header">
+            <h1 class="blog-title">Our Blog</h1>
+            <p class="blog-subtitle">Fashion tips, style guides, and latest trends</p>
+        </div>
+
+        <div class="blog-categories">
+            <span class="category-tag active">All</span>
+            <span class="category-tag">Fashion</span>
+            <span class="category-tag">Style Tips</span>
+            <span class="category-tag">Trends</span>
+            <span class="category-tag">Shopping</span>
+            <span class="category-tag">News</span>
+        </div>
+
+        <!-- Featured Post -->
+        <div class="featured-post">
+            <img src="https://via.placeholder.com/600x400/2ecc71/ffffff?text=Featured+Post" alt="Featured Post"
+                class="featured-image">
+            <div class="featured-content">
+                <span class="featured-label">Featured</span>
+                <div class="blog-meta">
+                    <span><i class="far fa-calendar"></i> Feb 23, 2026</span>
+                    <span><i class="far fa-user"></i> Sarah Johnson</span>
+                    <span><i class="far fa-comment"></i> 12 Comments</span>
+                </div>
+                <h2 class="blog-post-title">10 Summer Fashion Trends You Need to Know</h2>
+                <p class="blog-excerpt">Discover the hottest summer fashion trends that will keep you stylish all season
+                    long. From vibrant colors to sustainable fashion, we've got you covered...</p>
+                <a href="blog-post.html?id=1" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="blog-grid">
+            <div class="blog-card">
+                <img src="https://via.placeholder.com/400x250/3498db/ffffff?text=Blog+Post+1" alt="Blog Post"
+                    class="blog-image">
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span><i class="far fa-calendar"></i> Feb 20, 2026</span>
+                        <span><i class="far fa-user"></i> Mike Chen</span>
+                    </div>
+                    <h3 class="blog-post-title">How to Style White Sneakers</h3>
+                    <p class="blog-excerpt">White sneakers are a wardrobe essential. Here's how to style them for any
+                        occasion, from casual to dressy...</p>
+                    <a href="blog-post.html?id=2" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <img src="https://via.placeholder.com/400x250/e74c3c/ffffff?text=Blog+Post+2" alt="Blog Post"
+                    class="blog-image">
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span><i class="far fa-calendar"></i> Feb 18, 2026</span>
+                        <span><i class="far fa-user"></i> Emma Watson</span>
+                    </div>
+                    <h3 class="blog-post-title">Sustainable Fashion Guide</h3>
+                    <p class="blog-excerpt">Learn how to build an eco-friendly wardrobe without compromising on style.
+                        Tips for sustainable shopping...</p>
+                    <a href="blog-post.html?id=3" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <img src="https://via.placeholder.com/400x250/f39c12/ffffff?text=Blog+Post+3" alt="Blog Post"
+                    class="blog-image">
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span><i class="far fa-calendar"></i> Feb 15, 2026</span>
+                        <span><i class="far fa-user"></i> Alex Turner</span>
+                    </div>
+                    <h3 class="blog-post-title">Accessorizing 101</h3>
+                    <p class="blog-excerpt">The right accessories can transform any outfit. Discover the art of
+                        accessorizing and elevate your style...</p>
+                    <a href="blog-post.html?id=4" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link disabled" href="#"><i class="fas fa-chevron-left"></i></a></li>
+            <li class="page-item"><a class="page-link active" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">5</a></li>
+            <li class="page-item"><a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a></li>
+        </ul>
+    </div>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="newsletter-content">
+            <h3>Subscribe to Our Newsletter</h3>
+            <p>Get the latest fashion tips and exclusive offers</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <!-- Same footer -->
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>

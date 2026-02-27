@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ShopEase</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-page {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Admin Sidebar */
+        .admin-sidebar {
+            background: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .admin-logo {
+            padding: 0 1.5rem 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-nav {
+            padding: 1.5rem 0;
+        }
+
+        .admin-nav-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #999;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .admin-nav-item:hover,
+        .admin-nav-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .admin-nav-item i {
+            width: 20px;
+        }
+
+        /* Admin Main Content */
+        .admin-main {
+            background: #f5f5f5;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .admin-title {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(46, 204, 113, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            margin-top: 0.2rem;
+        }
+
+        .admin-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+        }
+
+        .btn-add {
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-add:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Tables */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 1rem;
+            background: var(--light-color);
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .action-btn {
+            padding: 0.3rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+            margin: 0 0.2rem;
+        }
+
+        .action-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .action-btn.delete:hover {
+            color: var(--danger-color);
+        }
+
+        /* Charts */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(45deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        /* Product Form Modal */
+        .product-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-page {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-sidebar {
+                display: none;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-page">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">ShopEase Admin</div>
+            <nav class="admin-nav">
+                <div class="admin-nav-item active" onclick="switchAdminTab('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </div>
+                <div class="admin-nav-item" onclick="switchAdminTab('products')">
+                    <i class="fas fa-box"></i> Products
+                </div>
+                <div class="admin-nav-item" onclick="switchAdminTab('orders')">
+                    <i class="fas fa-shopping-cart"></i> Orders
+                </div>
+                <div class="admin-nav-item" onclick="switchAdminTab('customers')">
+                    <i class="fas fa-users"></i> Customers
+                </div>
+                <div class="admin-nav-item" onclick="switchAdminTab('categories')">
+                    <i class="fas fa-tags"></i> Categories
+                </div>
+                <div class="admin-nav-item" onclick="switchAdminTab('reports')">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </div>
+                <div class="admin-nav-item" onclick="switchAdminTab('settings')">
+                    <i class="fas fa-cog"></i> Settings
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main" id="adminContent">
+            <!-- Dashboard Content -->
+            <div id="dashboardTab">
+                <div class="admin-header">
+                    <h1 class="admin-title">Dashboard</h1>
+                    <div class="admin-date">February 23, 2026</div>
+                </div>
+
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Revenue</h3>
+                            <div class="stat-number">$45,678</div>
+                            <div class="stat-change">↑ 12% from last month</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Orders</h3>
+                            <div class="stat-number">1,234</div>
+                            <div class="stat-change">↑ 8% from last month</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Customers</h3>
+                            <div class="stat-number">892</div>
+                            <div class="stat-change">↑ 15% from last month</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-box"></i></div>
+                        <div class="stat-info">
+                            <h3>Products Sold</h3>
+                            <div class="stat-number">2,456</div>
+                            <div class="stat-change">↑ 5% from last month</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <div class="chart-title">Sales Overview</div>
+                        <div class="chart-placeholder">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">Top Categories</div>
+                        <div class="chart-placeholder">
+                            <canvas id="categoriesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Orders</h2>
+                        <button class="btn-add" onclick="viewAllOrders()">View All</button>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrders">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Products Tab (hidden initially) -->
+            <div id="productsTab" style="display: none;">
+                <div class="admin-header">
+                    <h1 class="admin-title">Products Management</h1>
+                    <button class="btn-add" onclick="showAddProductModal()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+
+                <div class="admin-section">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable">
+                            <!-- Products will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close" onclick="closeProductModal()">&times;</span>
+            <h2>Add New Product</h2>
+            <form class="product-form" onsubmit="saveProduct(event)">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input type="number" id="productPrice" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Old Price (Optional)</label>
+                        <input type="number" id="productOldPrice" step="0.01">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="productCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="clothing">Clothing</option>
+                            <option value="footwear">Footwear</option>
+                            <option value="accessories">Accessories</option>
+                            <option value="electronics">Electronics</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock</label>
+                        <input type="number" id="productStock" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="productDescription" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="url" id="productImage" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="productOnSale"> On Sale
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="productIsNew"> New Arrival
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        let currentAdminTab = 'dashboard';
+
+        function switchAdminTab(tab) {
+            currentAdminTab = tab;
+
+            // Update nav items
+            document.querySelectorAll('.admin-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Show selected tab
+            document.querySelectorAll('#adminContent > div').forEach(div => {
+                div.style.display = 'none';
+            });
+            document.getElementById(tab + 'Tab').style.display = 'block';
+
+            // Load tab data
+            if (tab === 'products') loadProductsTable();
+            if (tab === 'orders') loadOrdersTable();
+        }
+
+        function loadProductsTable() {
+            const tbody = document.getElementById('productsTable');
+            tbody.innerHTML = products.map(product => `
+                <tr>
+                    <td>#${product.id}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <img src="${product.images[0]}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: var(--border-radius);">
+                            ${product.name}
+                        </div>
+                    </td>
+                    <td>${product.category}</td>
+                    <td>$${product.price.toFixed(2)}</td>
+                    <td>${product.stock}</td>
+                    <td><span class="status-badge status-${product.stock > 0 ? 'active' : 'inactive'}">${product.stock > 0 ? 'Active' : 'Out of Stock'}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="editProduct(${product.id})" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn" onclick="duplicateProduct(${product.id})" title="Duplicate">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="action-btn delete" onclick="deleteProduct(${product.id})" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadRecentOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const tbody = document.getElementById('recentOrders');
+
+            tbody.innerHTML = orders.slice(0, 5).map(order => `
+                <tr>
+                    <td>${order.orderNumber}</td>
+                    <td>${order.shipping?.firstName} ${order.shipping?.lastName}</td>
+                    <td>${new Date(order.date).toLocaleDateString()}</td>
+                    <td>${order.total}</td>
+                    <td><span class="status-badge status-${order.status || 'processing'}">${order.status || 'Processing'}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="viewOrder('${order.orderNumber}')" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" onclick="updateOrderStatus('${order.orderNumber}')" title="Update Status">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function showAddProductModal() {
+            document.getElementById('productModal').style.display = 'block';
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').style.display = 'none';
+        }
+
+        function saveProduct(e) {
+            e.preventDefault();
+
+            const newProduct = {
+                id: products.length + 1,
+                name: document.getElementById('productName').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                oldPrice: document.getElementById('productOldPrice').value ? parseFloat(document.getElementById('productOldPrice').value) : null,
+                category: document.getElementById('productCategory').value,
+                stock: parseInt(document.getElementById('productStock').value),
+                description: document.getElementById('productDescription').value,
+                images: [document.getElementById('productImage').value],
+                isSale: document.getElementById('productOnSale').checked,
+                isNew: document.getElementById('productIsNew').checked,
+                rating: 0,
+                reviews: 0
+            };
+
+            products.push(newProduct);
+            closeProductModal();
+            loadProductsTable();
+            cart.showNotification('Product added successfully!');
+        }
+
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                // Populate form and show modal
+                showAddProductModal();
+                // Fill with product data
+            }
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                const index = products.findIndex(p => p.id === id);
+                products.splice(index, 1);
+                loadProductsTable();
+                cart.showNotification('Product deleted successfully!');
+            }
+        }
+
+        function duplicateProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                const duplicate = { ...product, id: products.length + 1, name: `${product.name} (Copy)` };
+                products.push(duplicate);
+                loadProductsTable();
+                cart.showNotification('Product duplicated successfully!');
+            }
+        }
+
+        // Initialize charts
+        function initCharts() {
+            // Simple chart placeholders - you can integrate Chart.js for real charts
+            const salesCtx = document.getElementById('salesChart')?.getContext('2d');
+            const categoriesCtx = document.getElementById('categoriesChart')?.getContext('2d');
+
+            if (salesCtx) {
+                // Draw simple bars
+                salesCtx.fillStyle = '#f0f0f0';
+                salesCtx.fillRect(0, 0, 400, 200);
+            }
+        }
+
+        // Check admin access
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simple admin check (in production, use proper authentication)
+            if (!auth.currentUser || auth.currentUser.email !== 'admin@shopease.com') {
+                auth.showNotification('Admin access required', 'error');
+                setTimeout(() => window.location.href = 'index.html', 1500);
+                return;
+            }
+
+            loadRecentOrders();
+            initCharts();
+        });
+    </script>
+</body>
+
+</html>
