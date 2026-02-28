@@ -74,62 +74,147 @@
         </div>
     </header>
 
-    <div class="gc-container" style="max-width: 1200px; margin: 4rem auto; padding: 0 5%;">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <h1 class="placeholder-title" style="margin-bottom: 1rem;">ShopEase Gift Cards</h1>
-            <p style="color: #555; font-size: 1.1rem;">Give the perfect gift with a ShopEase Gift Card. Delivered
-                instantly via email.</p>
+    <div class="gc-container"
+        style="max-width: 1200px; margin: 4rem auto; padding: 0 5%; font-family: 'Inter', sans-serif;">
+        <div style="text-align: center; margin-bottom: 4rem;">
+            <h1 style="font-size: 3rem; margin-bottom: 1rem; color: #111; font-weight: 800;">The Perfect Gift, Every
+                Time.</h1>
+            <p style="color: #666; font-size: 1.2rem; max-width: 600px; margin: 0 auto;">ShopEase gift cards and top
+                entertainment brands, delivered instantly via email. Let them choose exactly what they want.</p>
         </div>
 
+        <h2
+            style="font-size: 1.8rem; margin-bottom: 2rem; color: #333; border-bottom: 2px solid #eee; padding-bottom: 0.5rem;">
+            ShopEase Originals</h2>
         <div class="products-grid"
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem; margin-bottom: 5rem;">
             <!-- Standard Gift Card -->
             <div class="product-card"
-                style="display: flex; flex-direction: column; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
-                <img src="images/standard_gift_card.png" alt="Standard Gift Card" class="product-image"
-                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #eee;">
-                <div class="product-info" style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column;">
-                    <h3 class="product-title" style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #2c3e50;">Standard
+                style="display: flex; flex-direction: column; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;"
+                onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 40px rgba(0,0,0,0.12)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)';">
+                <img src="images/standard_gift_card.png" alt="Standard Gift Card"
+                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #f0f0f0;">
+                <div style="padding: 2rem; flex-grow: 1; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem; color: #222; font-weight: 700;">Standard
                         Edition</h3>
-                    <div class="product-price"
-                        style="font-size: 1.3rem; font-weight: 600; color: #B12704; margin-bottom: 1.5rem;">$25 - $500
+                    <p style="color: #777; margin-bottom: 1.5rem; font-size: 0.95rem;">The classic, premium ShopEase
+                        gift card for any occasion.</p>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #000; margin-bottom: 1.5rem;">$25 - $500
                     </div>
-                    <button class="btn btn-primary btn-add-to-cart"
-                        style="margin-top: auto; padding: 0.8rem; background: #ffd814; border: 1px solid #fcd200; border-radius: 8px; cursor: pointer; font-weight: 500;"
+                    <button
+                        style="margin-top: auto; padding: 1rem; background: #000; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: background 0.2s;"
+                        onmouseover="this.style.background='#333'" onmouseout="this.style.background='#000'"
                         onclick="alert('Gift card added to cart!')">Select Amount</button>
                 </div>
             </div>
 
             <!-- Birthday Gift Card -->
             <div class="product-card"
-                style="display: flex; flex-direction: column; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
-                <img src="images/birthday_gift_card.png" alt="Birthday Gift Card" class="product-image"
-                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #eee;">
-                <div class="product-info" style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column;">
-                    <h3 class="product-title" style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #2c3e50;">Birthday
+                style="display: flex; flex-direction: column; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;"
+                onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 40px rgba(0,0,0,0.12)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)';">
+                <img src="images/birthday_gift_card.png" alt="Birthday Gift Card"
+                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #f0f0f0;">
+                <div style="padding: 2rem; flex-grow: 1; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem; color: #222; font-weight: 700;">Birthday
                         Edition</h3>
-                    <div class="product-price"
-                        style="font-size: 1.3rem; font-weight: 600; color: #B12704; margin-bottom: 1.5rem;">$25 - $500
+                    <p style="color: #777; margin-bottom: 1.5rem; font-size: 0.95rem;">Make their special day even
+                        brighter with this festive card.</p>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #000; margin-bottom: 1.5rem;">$25 - $500
                     </div>
-                    <button class="btn btn-primary btn-add-to-cart"
-                        style="margin-top: auto; padding: 0.8rem; background: #ffd814; border: 1px solid #fcd200; border-radius: 8px; cursor: pointer; font-weight: 500;"
+                    <button
+                        style="margin-top: auto; padding: 1rem; background: #000; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: background 0.2s;"
+                        onmouseover="this.style.background='#333'" onmouseout="this.style.background='#000'"
                         onclick="alert('Gift card added to cart!')">Select Amount</button>
                 </div>
             </div>
 
             <!-- Holiday Gift Card -->
             <div class="product-card"
-                style="display: flex; flex-direction: column; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
-                <img src="images/holiday_gift_card.png" alt="Holiday Gift Card" class="product-image"
-                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #eee;">
-                <div class="product-info" style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column;">
-                    <h3 class="product-title" style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #2c3e50;">Holiday
-                        Edition</h3>
-                    <div class="product-price"
-                        style="font-size: 1.3rem; font-weight: 600; color: #B12704; margin-bottom: 1.5rem;">$25 - $500
+                style="display: flex; flex-direction: column; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;"
+                onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 40px rgba(0,0,0,0.12)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)';">
+                <img src="images/holiday_gift_card.png" alt="Holiday Gift Card"
+                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #f0f0f0;">
+                <div style="padding: 2rem; flex-grow: 1; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem; color: #222; font-weight: 700;">Holiday Edition
+                    </h3>
+                    <p style="color: #777; margin-bottom: 1.5rem; font-size: 0.95rem;">Spread the joy of the season with
+                        a beautiful holiday motif.</p>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #000; margin-bottom: 1.5rem;">$25 - $500
                     </div>
-                    <button class="btn btn-primary btn-add-to-cart"
-                        style="margin-top: auto; padding: 0.8rem; background: #ffd814; border: 1px solid #fcd200; border-radius: 8px; cursor: pointer; font-weight: 500;"
+                    <button
+                        style="margin-top: auto; padding: 1rem; background: #000; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: background 0.2s;"
+                        onmouseover="this.style.background='#333'" onmouseout="this.style.background='#000'"
+                        onclick="alert('Gift card added to cart!')">Select Amount</button>
+                </div>
+            </div>
+        </div>
+
+        <h2
+            style="font-size: 1.8rem; margin-bottom: 2rem; color: #333; border-bottom: 2px solid #eee; padding-bottom: 0.5rem;">
+            Popular Brands</h2>
+        <div class="products-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem;">
+            <!-- iTunes -->
+            <div class="product-card"
+                style="display: flex; flex-direction: column; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;"
+                onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 40px rgba(0,0,0,0.12)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)';">
+                <img src="images/itunes_gift_card.png" alt="iTunes Gift Card"
+                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #f0f0f0;">
+                <div style="padding: 2rem; flex-grow: 1; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem; color: #222; font-weight: 700;">iTunes Card
+                    </h3>
+                    <p style="color: #777; margin-bottom: 1.5rem; font-size: 0.95rem;">Give the gift of music, apps,
+                        movies, and more.</p>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #000; margin-bottom: 1.5rem;">$10 - $100
+                    </div>
+                    <button
+                        style="margin-top: auto; padding: 1rem; background: #000; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: background 0.2s;"
+                        onmouseover="this.style.background='#333'" onmouseout="this.style.background='#000'"
+                        onclick="alert('Gift card added to cart!')">Select Amount</button>
+                </div>
+            </div>
+
+            <!-- Netflix -->
+            <div class="product-card"
+                style="display: flex; flex-direction: column; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;"
+                onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 40px rgba(0,0,0,0.12)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)';">
+                <img src="images/netflix_gift_card.png" alt="Netflix Gift Card"
+                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #f0f0f0;">
+                <div style="padding: 2rem; flex-grow: 1; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem; color: #222; font-weight: 700;">Netflix Card
+                    </h3>
+                    <p style="color: #777; margin-bottom: 1.5rem; font-size: 0.95rem;">Unending entertainment with their
+                        favorite movies and TV shows.</p>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #000; margin-bottom: 1.5rem;">$25 - $200
+                    </div>
+                    <button
+                        style="margin-top: auto; padding: 1rem; background: #e50914; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: background 0.2s;"
+                        onmouseover="this.style.background='#b20710'" onmouseout="this.style.background='#e50914'"
+                        onclick="alert('Gift card added to cart!')">Select Amount</button>
+                </div>
+            </div>
+
+            <!-- Xbox -->
+            <div class="product-card"
+                style="display: flex; flex-direction: column; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;"
+                onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 40px rgba(0,0,0,0.12)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)';">
+                <img src="images/xbox_gift_card.png" alt="Xbox Gift Card"
+                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #f0f0f0;">
+                <div style="padding: 2rem; flex-grow: 1; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem; color: #222; font-weight: 700;">Xbox Card</h3>
+                    <p style="color: #777; margin-bottom: 1.5rem; font-size: 0.95rem;">Level up with games, add-ons, or
+                        an Xbox Game Pass subscription.</p>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #000; margin-bottom: 1.5rem;">$10 - $100
+                    </div>
+                    <button
+                        style="margin-top: auto; padding: 1rem; background: #107C10; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: background 0.2s;"
+                        onmouseover="this.style.background='#0b5c0b'" onmouseout="this.style.background='#107C10'"
                         onclick="alert('Gift card added to cart!')">Select Amount</button>
                 </div>
             </div>
