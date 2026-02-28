@@ -74,12 +74,66 @@
         </div>
     </header>
 
-    <div class="placeholder-page">
-        <i class="fas fa-credit-card placeholder-icon"></i>
-        <h1 class="placeholder-title">Gift Cards</h1>
-        <p>Coming Soon! Give the perfect gift with a ShopEase Gift Card.</p>
-        <br>
-        <a href="products.html" class="btn btn-primary">Continue Shopping</a>
+    <div class="gc-container" style="max-width: 1200px; margin: 4rem auto; padding: 0 5%;">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h1 class="placeholder-title" style="margin-bottom: 1rem;">ShopEase Gift Cards</h1>
+            <p style="color: #555; font-size: 1.1rem;">Give the perfect gift with a ShopEase Gift Card. Delivered
+                instantly via email.</p>
+        </div>
+
+        <div class="products-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+            <!-- Standard Gift Card -->
+            <div class="product-card"
+                style="display: flex; flex-direction: column; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
+                <img src="images/standard_gift_card.png" alt="Standard Gift Card" class="product-image"
+                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #eee;">
+                <div class="product-info" style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column;">
+                    <h3 class="product-title" style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #2c3e50;">Standard
+                        Edition</h3>
+                    <div class="product-price"
+                        style="font-size: 1.3rem; font-weight: 600; color: #B12704; margin-bottom: 1.5rem;">$25 - $500
+                    </div>
+                    <button class="btn btn-primary btn-add-to-cart"
+                        style="margin-top: auto; padding: 0.8rem; background: #ffd814; border: 1px solid #fcd200; border-radius: 8px; cursor: pointer; font-weight: 500;"
+                        onclick="alert('Gift card added to cart!')">Select Amount</button>
+                </div>
+            </div>
+
+            <!-- Birthday Gift Card -->
+            <div class="product-card"
+                style="display: flex; flex-direction: column; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
+                <img src="images/birthday_gift_card.png" alt="Birthday Gift Card" class="product-image"
+                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #eee;">
+                <div class="product-info" style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column;">
+                    <h3 class="product-title" style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #2c3e50;">Birthday
+                        Edition</h3>
+                    <div class="product-price"
+                        style="font-size: 1.3rem; font-weight: 600; color: #B12704; margin-bottom: 1.5rem;">$25 - $500
+                    </div>
+                    <button class="btn btn-primary btn-add-to-cart"
+                        style="margin-top: auto; padding: 0.8rem; background: #ffd814; border: 1px solid #fcd200; border-radius: 8px; cursor: pointer; font-weight: 500;"
+                        onclick="alert('Gift card added to cart!')">Select Amount</button>
+                </div>
+            </div>
+
+            <!-- Holiday Gift Card -->
+            <div class="product-card"
+                style="display: flex; flex-direction: column; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
+                <img src="images/holiday_gift_card.png" alt="Holiday Gift Card" class="product-image"
+                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid #eee;">
+                <div class="product-info" style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column;">
+                    <h3 class="product-title" style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #2c3e50;">Holiday
+                        Edition</h3>
+                    <div class="product-price"
+                        style="font-size: 1.3rem; font-weight: 600; color: #B12704; margin-bottom: 1.5rem;">$25 - $500
+                    </div>
+                    <button class="btn btn-primary btn-add-to-cart"
+                        style="margin-top: auto; padding: 0.8rem; background: #ffd814; border: 1px solid #fcd200; border-radius: 8px; cursor: pointer; font-weight: 500;"
+                        onclick="alert('Gift card added to cart!')">Select Amount</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Quick View Modal -->
