@@ -77,6 +77,10 @@ The backend server should now be running, typically on `http://localhost:5000`.
 
 3. Open your browser and navigate to `http://localhost:5500`.
 
+## API Configuration
+
+The frontend uses `http://localhost:5000` as the default API URL. For production, set `window.API_URL` before `script.js` loads (e.g. in your HTML or a config script).
+
 ## API Endpoints Overview
 
 - `GET /health` - Check backend health status

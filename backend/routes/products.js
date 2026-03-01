@@ -35,6 +35,24 @@ router.get('/featured', async (req, res) => {
     }
 });
 
+// @route   GET /api/products/category/:category
+// @desc    Get products by category
+// @access  Public
+router.get('/category/:category', async (req, res) => {
+    try {
+        const categoryProducts = await Product.find({ category: req.params.category });
+
+        res.json({
+            success: true,
+            count: categoryProducts.length,
+            products: categoryProducts
+        });
+    } catch (error) {
+        console.error('❌ Error fetching products by category:', error);
+        res.status(500).json({ success: false, message: 'Error fetching products by category' });
+    }
+});
+
 // @route   GET /api/products/:id
 // @desc    Get single product
 // @access  Public
@@ -52,29 +70,10 @@ router.get('/:id', async (req, res) => {
         });
     } catch (error) {
         console.error('❌ Error fetching product:', error);
-        // Catch invalid ObjectId errors gracefully
         if (error.kind === 'ObjectId') {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
         res.status(500).json({ success: false, message: 'Error fetching product' });
-    }
-});
-
-// @route   GET /api/products/category/:category
-// @desc    Get products by category
-// @access  Public
-router.get('/category/:category', async (req, res) => {
-    try {
-        const categoryProducts = await Product.find({ category: req.params.category });
-
-        res.json({
-            success: true,
-            count: categoryProducts.length,
-            products: categoryProducts
-        });
-    } catch (error) {
-        console.error('❌ Error fetching products by category:', error);
-        res.status(500).json({ success: false, message: 'Error fetching products by category' });
     }
 });
 

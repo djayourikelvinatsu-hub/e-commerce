@@ -96,6 +96,42 @@ router.get('/myorders', protect, async (req, res) => {
     }
 });
 
+// @route   GET /api/orders/by-number/:orderNumber
+// @desc    Get order by order number
+// @access  Private
+router.get('/by-number/:orderNumber', protect, async (req, res) => {
+    try {
+        const order = await Order.findOne({ orderNumber: req.params.orderNumber })
+            .populate('user', 'name email')
+            .populate('items.product', 'name images price');
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            });
+        }
+
+        if (order.user._id.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({
+                success: false,
+                message: 'Not authorized'
+            });
+        }
+
+        res.json({
+            success: true,
+            order
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+});
+
 // @route   GET /api/orders/:id
 // @desc    Get order by ID
 // @access  Private
