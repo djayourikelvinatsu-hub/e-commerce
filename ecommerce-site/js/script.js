@@ -1,5 +1,72 @@
-// Complete Product Data with Real Images
-const products = [
+// API Configuration - use env or fallback for dev
+const API_BASE = (typeof window !== 'undefined' && window.API_URL) || 'http://localhost:5000';
+
+// Normalize product from API (images array of objects) to frontend format
+function normalizeProduct(p) {
+    if (!p) return null;
+    const id = p._id || p.id;
+    const img = p.images && p.images[0];
+    const imageUrl = typeof img === 'string' ? img : (img && img.url) || (p.images && p.images[0]);
+    return {
+        id: id,
+        _id: p._id || id,
+        name: p.name,
+        price: p.price,
+        oldPrice: p.oldPrice,
+        category: p.category,
+        subcategory: p.subcategory,
+        brand: p.brand,
+        images: Array.isArray(p.images)
+            ? p.images.map(i => (typeof i === 'string' ? i : i && i.url)).filter(Boolean)
+            : [imageUrl],
+        description: p.description,
+        stock: p.stock ?? 0,
+        rating: p.rating ?? 0,
+        reviews: p.numReviews ?? p.reviews ?? 0,
+        isNew: p.isNew ?? false,
+        isSale: p.isOnSale ?? p.isSale ?? false
+    };
+}
+
+// Fetch products from API, fallback to hardcoded
+async function fetchProducts() {
+    try {
+        const res = await fetch(`${API_BASE}/api/products`);
+        const data = await res.json();
+        if (data.success && data.products) {
+            products = data.products.map(normalizeProduct);
+            return products;
+        }
+    } catch (e) {
+        console.warn('API unavailable, using fallback products');
+    }
+    return products;
+}
+
+async function fetchCategories() {
+    try {
+        const res = await fetch(`${API_BASE}/api/products`);
+        const data = await res.json();
+        if (data.success && data.products) {
+            const cats = {};
+            data.products.forEach(p => {
+                const c = (p.category || '').toLowerCase();
+                if (c && !cats[c]) cats[c] = { name: c.charAt(0).toUpperCase() + c.slice(1), count: 0 };
+                if (cats[c]) cats[c].count++;
+            });
+            return Object.values(cats).map((c, i) => ({
+                id: i + 1,
+                name: c.name,
+                image: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=400&h=300&fit=crop',
+                count: c.count
+            }));
+        }
+    } catch (e) {}
+    return null;
+}
+
+// Complete Product Data with Real Images (fallback when API unavailable)
+let products = [
     // Clothing Category
     {
         id: 1,
@@ -302,7 +369,8 @@ class ShoppingCart {
     }
 
     addItem(productId, quantity = 1) {
-        const product = products.find(p => p.id === productId);
+        const pid = String(productId);
+        const product = products.find(p => String(p._id || p.id) === pid);
 
         if (!product) {
             this.showNotification('Product not found', 'error');
@@ -314,7 +382,7 @@ class ShoppingCart {
             return false;
         }
 
-        const existingItem = this.items.find(item => item.id === productId);
+        const existingItem = this.items.find(item => String(item.id) === pid);
 
         if (existingItem) {
             if (product.stock >= existingItem.quantity + quantity) {
@@ -325,10 +393,10 @@ class ShoppingCart {
             }
         } else {
             this.items.push({
-                id: product.id,
+                id: product._id || product.id,
                 name: product.name,
                 price: product.price,
-                image: product.images[0],
+                image: (product.images && product.images[0]) || '',
                 quantity: quantity,
                 stock: product.stock
             });
@@ -340,19 +408,21 @@ class ShoppingCart {
     }
 
     removeItem(productId) {
-        this.items = this.items.filter(item => item.id !== productId);
+        const pid = String(productId);
+        this.items = this.items.filter(item => String(item.id) !== pid);
         this.saveCart();
         this.showNotification('Item removed from cart');
     }
 
     updateQuantity(productId, quantity) {
-        const item = this.items.find(item => item.id === productId);
+        const pid = String(productId);
+        const item = this.items.find(item => String(item.id) === pid);
 
         if (item) {
             if (quantity <= 0) {
                 this.removeItem(productId);
             } else {
-                const product = products.find(p => p.id === productId);
+                const product = products.find(p => String(p._id || p.id) === String(productId));
                 if (product && product.stock >= quantity) {
                     item.quantity = quantity;
                     this.saveCart();
@@ -416,10 +486,21 @@ class ShoppingCart {
 // Initialize cart
 const cart = new ShoppingCart();
 
+// Category images by name
+const categoryImages = {
+    clothing: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=400&h=300&fit=crop',
+    footwear: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop',
+    accessories: 'https://images.unsplash.com/photo-1523772721666-22ad3c3b6f90?w=400&h=300&fit=crop',
+    electronics: 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=400&h=300&fit=crop'
+};
+
 // DOM Elements
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Fetch products from API first
+    await fetchProducts();
+
     // Load categories on homepage
-    loadCategories();
+    await loadCategories();
 
     // Load featured products on homepage
     loadFeaturedProducts();
@@ -431,15 +512,28 @@ document.addEventListener('DOMContentLoaded', () => {
     cart.updateCartCount();
 });
 
-// Load categories
-function loadCategories() {
+// Load categories (from API or fallback)
+async function loadCategories() {
     const categoryGrid = document.getElementById('categoryGrid');
     if (!categoryGrid) return;
 
-    categoryGrid.innerHTML = categories.map(category => `
+    let cats = await fetchCategories();
+    if (!cats || cats.length === 0) {
+        cats = categories.map((c, i) => ({
+            ...c,
+            image: categoryImages[c.name.toLowerCase()] || c.image
+        }));
+    } else {
+        cats = cats.map(c => ({
+            ...c,
+            image: categoryImages[c.name.toLowerCase()] || categoryImages.clothing
+        }));
+    }
+
+    categoryGrid.innerHTML = cats.map(category => `
         <div class="category-card" onclick="window.location.href='products.html?category=${category.name.toLowerCase()}'">
             <img src="${category.image}" alt="${category.name}">
-            <h3>${category.name} <span>(${category.count})</span></h3>
+            <h3>${category.name} <span>(${category.count || 0})</span></h3>
         </div>
     `).join('');
 }
@@ -449,44 +543,48 @@ function loadFeaturedProducts() {
     const productsGrid = document.getElementById('featuredProducts');
     if (!productsGrid) return;
 
-    // Get first 6 products as featured
-    const featuredProducts = products.slice(0, 6);
+    const featured = products.filter(p => p.isSale || p.isNew).slice(0, 6);
+    const featuredProducts = featured.length >= 4 ? featured : products.slice(0, 6);
 
-    productsGrid.innerHTML = featuredProducts.map(product => `
+    productsGrid.innerHTML = featuredProducts.map(product => {
+        const pid = product._id || product.id;
+        const img0 = (product.images && product.images[0]) || '';
+        const pidStr = typeof pid === 'string' ? `'${pid}'` : pid;
+        return `
         <div class="product-card">
             ${product.stock === 0 ? '<span class="product-badge">Out of Stock</span>' : ''}
             ${product.isSale ? '<span class="product-badge sale">Sale</span>' : ''}
             ${product.isNew ? '<span class="product-badge new">New</span>' : ''}
             <div class="product-image-container">
-                <img src="${product.images[0]}" alt="${product.name}" class="product-image" 
-                     onclick="window.location.href='product-detail.html?id=${product.id}'">
+                <img src="${img0}" alt="${product.name}" class="product-image" 
+                     onclick="window.location.href='product-detail.html?id=${pid}'">
                 <div class="product-actions">
-                    <button class="action-btn" onclick="addToWishlist(${product.id})" title="Add to Wishlist">
+                    <button class="action-btn" onclick="addToWishlist('${pid}')" title="Add to Wishlist">
                         <i class="far fa-heart"></i>
                     </button>
-                    <button class="action-btn" onclick="quickView(${product.id})" title="Quick View">
+                    <button class="action-btn" onclick="quickView('${pid}')" title="Quick View">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
             <div class="product-info">
-                <h3 class="product-title" onclick="window.location.href='product-detail.html?id=${product.id}'">${product.name}</h3>
+                <h3 class="product-title" onclick="window.location.href='product-detail.html?id=${pid}'">${product.name}</h3>
                 <div class="product-price">
                     $${product.price.toFixed(2)}
                     ${product.oldPrice ? `<del>$${product.oldPrice.toFixed(2)}</del>` : ''}
                 </div>
                 <div class="product-rating">
-                    ${'★'.repeat(Math.floor(product.rating))}${product.rating % 1 ? '½' : ''}
-                    <span class="rating-count">(${product.reviews})</span>
+                    ${'★'.repeat(Math.floor(product.rating || 0))}${(product.rating || 0) % 1 ? '½' : ''}
+                    <span class="rating-count">(${product.reviews || 0})</span>
                 </div>
                 <button class="btn btn-primary btn-add-to-cart" 
-                        onclick="cart.addItem(${product.id})"
+                        onclick="cart.addItem('${pid}')"
                         ${product.stock === 0 ? 'disabled' : ''}>
                     ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                 </button>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 // Add to cart function (global)
@@ -496,7 +594,7 @@ window.addToCart = function (productId) {
 
 // Quick view function
 window.quickView = function (productId) {
-    const product = products.find(p => p.id === productId);
+    const product = products.find(p => String(p._id || p.id) === String(productId));
     if (!product) return;
 
     const modal = document.getElementById('quickViewModal');
@@ -521,11 +619,11 @@ window.quickView = function (productId) {
                     ${product.stock > 0 ? `✓ In Stock (${product.stock} available)` : '✗ Out of Stock'}
                 </p>
                 <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <button class="btn btn-primary" onclick="addToCartFromQuickView(${product.id})" 
+                    <button class="btn btn-primary" onclick="addToCartFromQuickView('${product._id || product.id}')"
                             ${product.stock === 0 ? 'disabled' : ''}>
                         Add to Cart
                     </button>
-                    <button class="btn btn-outline" onclick="addToWishlist(${product.id})">
+                    <button class="btn btn-outline" onclick="addToWishlist('${product._id || product.id}')">
                         <i class="far fa-heart"></i> Add to Wishlist
                     </button>
                 </div>
@@ -555,15 +653,53 @@ window.addToCartFromQuickView = function (productId) {
 // Wishlist functions
 let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 
-window.addToWishlist = function (productId) {
-    if (!wishlist.includes(productId)) {
-        wishlist.push(productId);
-        localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        cart.showNotification('Added to wishlist');
+window.addToWishlist = async function (productId) {
+    const pid = String(productId);
+    const inList = wishlist.some(id => String(id) === pid);
+    if (auth.token && auth.user) {
+        try {
+            if (inList) {
+                const res = await fetch(`${API_BASE}/api/users/wishlist/${pid}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${auth.token}` }
+                });
+                if (res.ok) {
+                    wishlist = wishlist.filter(id => String(id) !== pid);
+                    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                    cart.showNotification('Removed from wishlist');
+                }
+            } else {
+                const res = await fetch(`${API_BASE}/api/users/wishlist/${pid}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${auth.token}` }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    wishlist = [...wishlist, pid];
+                    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                    cart.showNotification('Added to wishlist');
+                } else {
+                    cart.showNotification(data.message || 'Failed', 'error');
+                }
+            }
+        } catch (e) {
+            if (inList) {
+                wishlist = wishlist.filter(id => String(id) !== pid);
+            } else {
+                wishlist.push(pid);
+            }
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+            cart.showNotification(inList ? 'Removed from wishlist' : 'Added to wishlist');
+        }
     } else {
-        wishlist = wishlist.filter(id => id !== productId);
+        if (inList) {
+            wishlist = wishlist.filter(id => String(id) !== pid);
+            cart.showNotification('Removed from wishlist');
+        } else {
+            wishlist.push(pid);
+            cart.showNotification('Added to wishlist');
+        }
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        cart.showNotification('Removed from wishlist');
     }
 };
 
@@ -764,7 +900,7 @@ window.auth = {
         const password = document.getElementById('loginPassword').value;
 
         try {
-            const res = await fetch('http://localhost:5001/api/auth/login', {
+            const res = await fetch(`${API_BASE}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -792,7 +928,7 @@ window.auth = {
         const password = document.getElementById('registerPassword').value;
 
         try {
-            const res = await fetch('http://localhost:5001/api/auth/register', {
+            const res = await fetch(`${API_BASE}/api/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password })

@@ -292,26 +292,29 @@
             const end = start + productsPerPage;
             const pageProducts = filteredProducts.slice(start, end);
 
-            grid.innerHTML = pageProducts.map(product => `
+            grid.innerHTML = pageProducts.map(product => {
+                const pid = product._id || product.id;
+                const img0 = (product.images && product.images[0]) || '';
+                return `
                 <div class="product-card">
                     ${product.stock === 0 ? '<span class="product-badge">Out of Stock</span>' : ''}
                     ${product.isSale ? '<span class="product-badge sale">Sale</span>' : ''}
-                    <img src="${product.images[0]}" alt="${product.name}" class="product-image" 
-                         onclick="window.location.href='product-detail.html?id=${product.id}'">
+                    <img src="${img0}" alt="${product.name}" class="product-image" 
+                         onclick="window.location.href='product-detail.html?id=${pid}'">
                     <div class="product-info">
-                        <h3 class="product-title" onclick="window.location.href='product-detail.html?id=${product.id}'">${product.name}</h3>
+                        <h3 class="product-title" onclick="window.location.href='product-detail.html?id=${pid}'">${product.name}</h3>
                         <div class="product-price">
                             $${product.price.toFixed(2)}
                             ${product.oldPrice ? `<del>$${product.oldPrice.toFixed(2)}</del>` : ''}
                         </div>
                         <button class="btn btn-primary btn-add-to-cart" 
-                                onclick="cart.addItem(${product.id})"
+                                onclick="cart.addItem('${pid}')"
                                 ${product.stock === 0 ? 'disabled' : ''}>
                             Add to Cart
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
 
             document.getElementById('productsCount').innerHTML =
                 `Showing <strong>${start + 1}-${Math.min(end, filteredProducts.length)}</strong> of <strong>${filteredProducts.length}</strong> products`;
@@ -419,7 +422,8 @@
         }
 
         // Initialize page
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchProducts();
             filteredProducts = [...products];
 
             // Parse URL parameters

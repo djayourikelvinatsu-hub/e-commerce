@@ -260,13 +260,15 @@
 
     <script src="js/script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchProducts();
             const urlParams = new URLSearchParams(window.location.search);
-            let productId = parseInt(urlParams.get('id'));
-            if (!productId || isNaN(productId)) {
-                productId = 1; // Default to first product if none specified for demo purposes
+            const productId = urlParams.get('id');
+            if (!productId) {
+                document.getElementById('productDetailContainer').innerHTML = '<div style="text-align: center; padding: 4rem;"><h2>Product not found</h2><a href="index.html" class="btn btn-primary" style="margin-top: 1rem;">Return to Home</a></div>';
+                return;
             }
-            const product = products.find(p => p.id === productId);
+            const product = products.find(p => String(p._id || p.id) === String(productId));
 
             const container = document.getElementById('productDetailContainer');
 
@@ -325,10 +327,10 @@
                         </div>
                         
                         <div class="buy-box-buttons">
-                            <button class="btn-add-to-cart" onclick="cart.addItem(${product.id})" ${product.stock === 0 ? 'disabled style="opacity: 0.5;"' : ''}>
+                            <button class="btn-add-to-cart" onclick="cart.addItem('${product._id || product.id}')" ${product.stock === 0 ? 'disabled style="opacity: 0.5;"' : ''}>
                                 Add to Cart
                             </button>
-                            <button class="btn-buy-now" onclick="cart.addItem(${product.id}); window.location.href='checkout.html';" ${product.stock === 0 ? 'disabled style="opacity: 0.5;"' : ''}>
+                            <button class="btn-buy-now" onclick="cart.addItem('${product._id || product.id}'); window.location.href='checkout.html';" ${product.stock === 0 ? 'disabled style="opacity: 0.5;"' : ''}>
                                 Buy Now
                             </button>
                         </div>

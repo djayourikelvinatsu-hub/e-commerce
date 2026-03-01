@@ -152,9 +152,25 @@
 
     <script src="js/script.js"></script>
     <script>
-        function loadWishlist() {
+        const API_BASE = (typeof window !== 'undefined' && window.API_URL) || 'http://localhost:5000';
+
+        async function loadWishlist() {
+            await fetchProducts();
+            if (auth.token && auth.user) {
+                try {
+                    const res = await fetch(`${API_BASE}/api/users/wishlist`, {
+                        headers: { 'Authorization': `Bearer ${auth.token}` }
+                    });
+                    const data = await res.json();
+                    if (data.success && data.wishlist) {
+                        wishlist = data.wishlist.map(p => p._id || p.id || p).filter(Boolean);
+                        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                    }
+                } catch (e) {}
+            }
             const grid = document.getElementById('wishlistGrid');
-            const wishlistItems = products.filter(p => wishlist.includes(p.id));
+            const wishlistIds = wishlist.map(id => String(id));
+            const wishlistItems = products.filter(p => wishlistIds.includes(String(p._id || p.id)));
 
             if (wishlistItems.length === 0) {
                 grid.innerHTML = `
@@ -168,29 +184,33 @@
                 return;
             }
 
-            grid.innerHTML = wishlistItems.map(product => `
+            grid.innerHTML = wishlistItems.map(product => {
+                const pid = product._id || product.id;
+                const img0 = (product.images && product.images[0]) || '';
+                return `
                 <div class="wishlist-item">
-                    <button class="remove-wishlist" onclick="removeFromWishlist(${product.id})">
+                    <button class="remove-wishlist" onclick="removeFromWishlist('${pid}')">
                         <i class="fas fa-times"></i>
                     </button>
-                    <img src="${product.images[0]}" alt="${product.name}" 
-                         onclick="window.location.href='product-detail.html?id=${product.id}'">
+                    <img src="${img0}" alt="${product.name}" 
+                         onclick="window.location.href='product-detail.html?id=${pid}'">
                     <div class="wishlist-item-info">
-                        <h3 class="wishlist-item-title" onclick="window.location.href='product-detail.html?id=${product.id}'">
+                        <h3 class="wishlist-item-title" onclick="window.location.href='product-detail.html?id=${pid}'">
                             ${product.name}
                         </h3>
                         <div class="wishlist-item-price">$${product.price.toFixed(2)}</div>
                         <button class="btn btn-primary btn-add-to-cart" 
-                                onclick="cart.addItem(${product.id})">
-                            Add to Cart
+                                onclick="cart.addItem('${pid}')" ${product.stock === 0 ? 'disabled' : ''}>
+                            ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function removeFromWishlist(productId) {
-            wishlist = wishlist.filter(id => id !== productId);
+            const pid = String(productId);
+            wishlist = wishlist.filter(id => String(id) !== pid);
             localStorage.setItem('wishlist', JSON.stringify(wishlist));
             loadWishlist();
             cart.showNotification('Removed from wishlist');

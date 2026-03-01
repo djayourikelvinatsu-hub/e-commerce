@@ -285,11 +285,14 @@
 
     <script src="js/script.js"></script>
     <script>
+        const API_BASE = (typeof window !== 'undefined' && window.API_URL) || 'http://localhost:5000';
+
         function loadOrderSummary() {
             const container = document.getElementById('orderItemsList');
             const subtotal = cart.getSubtotal();
             const shipping = subtotal > 100 ? 0 : 10;
-            const total = subtotal + shipping + (subtotal * 0.1);
+            const tax = subtotal * 0.1;
+            const total = subtotal + shipping + tax;
 
             container.innerHTML = cart.items.map(item => `
                 <div class="order-item">
@@ -307,24 +310,72 @@
             document.getElementById('orderTotal').textContent = `$${total.toFixed(2)}`;
         }
 
-        function placeOrder(e) {
+        async function placeOrder(e) {
             e.preventDefault();
 
-            // Simple validation
+            if (!auth.token || !auth.user) {
+                cart.showNotification('Please sign in to place an order', 'error');
+                auth.openModal();
+                return;
+            }
+
             const required = ['email', 'phone', 'firstName', 'lastName', 'address', 'city', 'state', 'zipCode', 'cardNumber', 'expiry', 'cvv'];
             for (let field of required) {
-                if (!document.getElementById(field).value) {
+                if (!document.getElementById(field).value.trim()) {
                     cart.showNotification('Please fill all fields', 'error');
                     return;
                 }
             }
 
-            // Clear cart
-            cart.items = [];
-            cart.saveCart();
+            const subtotal = cart.getSubtotal();
+            const shippingPrice = subtotal > 100 ? 0 : 10;
+            const taxPrice = subtotal * 0.1;
+            const totalPrice = subtotal + shippingPrice + taxPrice;
 
-            // Show success modal
-            document.getElementById('successModal').style.display = 'block';
+            const orderPayload = {
+                items: cart.items.map(item => ({
+                    product: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    image: item.image
+                })),
+                shippingAddress: {
+                    street: document.getElementById('address').value.trim(),
+                    city: document.getElementById('city').value.trim(),
+                    state: document.getElementById('state').value.trim(),
+                    zipCode: document.getElementById('zipCode').value.trim(),
+                    country: 'USA'
+                },
+                paymentMethod: 'credit_card',
+                itemsPrice: subtotal,
+                taxPrice,
+                shippingPrice,
+                totalPrice
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/api/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth.token}`
+                    },
+                    body: JSON.stringify(orderPayload)
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    cart.items = [];
+                    cart.saveCart();
+                    document.getElementById('successModal').style.display = 'block';
+                } else {
+                    cart.showNotification(data.message || 'Order failed', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                cart.showNotification('Failed to place order. Is the backend running?', 'error');
+            }
         }
 
         function continueShopping() {
@@ -334,6 +385,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (cart.items.length === 0) {
                 window.location.href = 'cart.html';
+                return;
             }
             loadOrderSummary();
         });

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - ShopEase</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .invoice-page { max-width: 800px; margin: 2rem auto; padding: 2rem; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .invoice-header { display: flex; justify-content: space-between; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #ddd; }
+        .invoice-title { font-size: 2rem; color: #2c3e50; }
+        .invoice-meta { text-align: right; color: #666; }
+        .invoice-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .invoice-table th, .invoice-table td { padding: 0.75rem; border-bottom: 1px solid #eee; text-align: left; }
+        .invoice-table th { background: #f5f5f5; font-weight: 600; }
+        .invoice-total { text-align: right; font-size: 1.2rem; font-weight: 600; margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #ddd; }
+        .no-order { text-align: center; padding: 4rem; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="invoice-page" id="invoiceContent">
+        <div class="no-order">
+            <i class="fas fa-file-invoice" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+            <h2>Invoice</h2>
+            <p>Loading...</p>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+    <script>
+        const API_BASE = (typeof window !== 'undefined' && window.API_URL) || 'http://localhost:5000';
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const orderId = params.get('order');
+            const container = document.getElementById('invoiceContent');
+
+            if (!orderId) {
+                container.innerHTML = '<div class="no-order"><h2>Invoice</h2><p>No order specified.</p><a href="orders.html" class="btn btn-primary">View Orders</a></div>';
+                return;
+            }
+
+            let order = null;
+            if (auth.token) {
+                try {
+                    const isObjectId = /^[a-f\d]{24}$/i.test(orderId);
+                    const url = isObjectId
+                        ? `${API_BASE}/api/orders/${orderId}`
+                        : `${API_BASE}/api/orders/by-number/${encodeURIComponent(orderId)}`;
+                    const res = await fetch(url, {
+                        headers: { 'Authorization': `Bearer ${auth.token}` }
+                    });
+                    const data = await res.json();
+                    if (data.success) order = data.order;
+                } catch (e) {}
+            }
+            if (!order) {
+                const orders = JSON.parse(localStorage.getItem('orders')) || [];
+                order = orders.find(o => o.orderNumber === orderId || o._id === orderId);
+            }
+
+            if (!order) {
+                container.innerHTML = '<div class="no-order"><h2>Invoice</h2><p>Order not found.</p><a href="orders.html" class="btn btn-primary">View Orders</a></div>';
+                return;
+            }
+
+            const items = order.items || [];
+            const total = order.totalPrice || order.total || 0;
+            const itemImg = (i) => (i.image || (i.product && i.product.images && i.product.images[0] && i.product.images[0].url) || '');
+
+            container.innerHTML = `
+                <div class="invoice-header">
+                    <div>
+                        <h1 class="invoice-title">ShopEase</h1>
+                        <p>Invoice #${order.orderNumber || orderId}</p>
+                    </div>
+                    <div class="invoice-meta">
+                        <p>Date: ${new Date(order.createdAt || order.date).toLocaleDateString()}</p>
+                        <p>Status: ${order.status || 'Pending'}</p>
+                    </div>
+                </div>
+                <div>
+                    <h3>Shipping Address</h3>
+                    <p>${(order.shippingAddress && [order.shippingAddress.street, order.shippingAddress.city, order.shippingAddress.state, order.shippingAddress.zipCode].filter(Boolean).join(', ')) || 'N/A'}</p>
+                </div>
+                <table class="invoice-table">
+                    <thead>
+                        <tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+                    </thead>
+                    <tbody>
+                        ${items.map(i => `
+                            <tr>
+                                <td>${i.name}</td>
+                                <td>${i.quantity}</td>
+                                <td>$${(i.price || 0).toFixed(2)}</td>
+                                <td>$${((i.price || 0) * (i.quantity || 1)).toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="invoice-total">Total: $${typeof total === 'number' ? total.toFixed(2) : total}</div>
+                <p style="margin-top: 2rem; color: #666; font-size: 0.9rem;">Thank you for shopping with ShopEase!</p>
+            `;
+        });
+    </script>
+</body>
+</html>

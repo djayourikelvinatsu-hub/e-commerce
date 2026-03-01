@@ -278,11 +278,11 @@
 
     <script src="js/script.js"></script>
     <script>
-        function loadOrders() {
-            const orders = JSON.parse(localStorage.getItem('orders')) || [];
-            const container = document.getElementById('ordersContainer');
+        const API_BASE = (typeof window !== 'undefined' && window.API_URL) || 'http://localhost:5000';
 
-            if (orders.length === 0) {
+        function renderOrders(orders) {
+            const container = document.getElementById('ordersContainer');
+            if (!orders || orders.length === 0) {
                 container.innerHTML = `
                     <div class="no-orders">
                         <i class="fas fa-shopping-bag"></i>
@@ -299,29 +299,34 @@
                     'delivered': 'status-delivered',
                     'shipped': 'status-shipped',
                     'processing': 'status-processing',
+                    'pending': 'status-processing',
                     'cancelled': 'status-cancelled'
                 }[order.status || 'processing'];
+                const orderId = order._id || order.orderNumber;
+                const items = order.items || [];
+                const itemImg = (i) => (i.image || (i.product && i.product.images && i.product.images[0] && i.product.images[0].url) || '');
+                const total = order.totalPrice || order.total || 0;
 
                 return `
                     <div class="order-card">
                         <div class="order-header">
                             <div>
-                                <span class="order-number">${order.orderNumber}</span>
-                                <span class="order-date">${new Date(order.date).toLocaleDateString()}</span>
+                                <span class="order-number">${order.orderNumber || orderId}</span>
+                                <span class="order-date">${new Date(order.createdAt || order.date).toLocaleDateString()}</span>
                             </div>
                             <span class="order-status ${statusClass}">${order.status || 'Processing'}</span>
                         </div>
                         
                         <div class="order-body">
                             <div class="order-items">
-                                ${order.items.map(item => `
+                                ${items.map(item => `
                                     <div class="order-item">
-                                        <img src="${item.image}" alt="${item.name}" class="order-item-image">
+                                        <img src="${itemImg(item)}" alt="${item.name}" class="order-item-image">
                                         <div class="order-item-details">
                                             <div class="order-item-name">${item.name}</div>
                                             <div class="order-item-meta">Qty: ${item.quantity}</div>
                                         </div>
-                                        <div class="order-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+                                        <div class="order-item-price">$${((item.price || 0) * (item.quantity || 1)).toFixed(2)}</div>
                                     </div>
                                 `).join('')}
                             </div>
@@ -329,16 +334,16 @@
                         
                         <div class="order-footer">
                             <div class="order-total">
-                                Total: ${order.total}
+                                Total: $${typeof total === 'number' ? total.toFixed(2) : total}
                             </div>
                             <div class="order-actions">
-                                <button class="btn-outline-small" onclick="trackOrder('${order.orderNumber}')">
+                                <button class="btn-outline-small" onclick="trackOrder('${order.orderNumber || orderId}')">
                                     <i class="fas fa-truck"></i> Track Order
                                 </button>
-                                <button class="btn-outline-small" onclick="viewInvoice('${order.orderNumber}')">
+                                <button class="btn-outline-small" onclick="viewInvoice('${order._id || order.orderNumber || orderId}', '${order.orderNumber || orderId}')">
                                     <i class="fas fa-file-invoice"></i> Invoice
                                 </button>
-                                <button class="btn-outline-small" onclick="reorder('${order.orderNumber}')">
+                                <button class="btn-outline-small" onclick="reorder('${order.orderNumber || orderId}')">
                                     <i class="fas fa-redo"></i> Reorder
                                 </button>
                             </div>
@@ -348,34 +353,48 @@
             }).join('');
         }
 
-        function filterOrders() {
-            const filter = document.getElementById('orderStatusFilter').value;
-            const orders = JSON.parse(localStorage.getItem('orders')) || [];
-            const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
-            displayFilteredOrders(filtered);
+        let allOrders = [];
+
+        async function loadOrders() {
+            if (auth.token && auth.user) {
+                try {
+                    const res = await fetch(`${API_BASE}/api/orders/myorders`, {
+                        headers: { 'Authorization': `Bearer ${auth.token}` }
+                    });
+                    const data = await res.json();
+                    if (data.success && data.orders) {
+                        allOrders = data.orders;
+                        renderOrders(allOrders);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Failed to fetch orders from API', e);
+                }
+            }
+            allOrders = JSON.parse(localStorage.getItem('orders')) || [];
+            renderOrders(allOrders);
         }
 
-        function displayFilteredOrders(orders) {
-            // Similar to loadOrders but with filtered array
+        function filterOrders() {
+            const filter = document.getElementById('orderStatusFilter').value;
+            const filtered = filter === 'all' ? allOrders : allOrders.filter(o => (o.status || '').toLowerCase() === filter.toLowerCase());
+            renderOrders(filtered);
         }
 
         function trackOrder(orderNumber) {
             cart.showNotification(`Tracking order: ${orderNumber}`);
         }
 
-        function viewInvoice(orderNumber) {
-            window.open(`invoice.html?order=${orderNumber}`, '_blank');
+        function viewInvoice(orderIdOrNumber, orderNumber) {
+            window.open(`invoice.html?order=${encodeURIComponent(orderIdOrNumber)}`, '_blank');
         }
 
         function reorder(orderNumber) {
-            const orders = JSON.parse(localStorage.getItem('orders')) || [];
-            const order = orders.find(o => o.orderNumber === orderNumber);
-
-            if (order) {
+            const order = allOrders.find(o => (o.orderNumber || o._id) === orderNumber);
+            if (order && order.items) {
                 order.items.forEach(item => {
-                    for (let i = 0; i < item.quantity; i++) {
-                        cart.addItem(item.id);
-                    }
+                    const pid = item.product && (item.product._id || item.product) || item.id;
+                    if (pid) cart.addItem(pid, item.quantity || 1);
                 });
                 cart.showNotification('Items added to cart!');
             }
